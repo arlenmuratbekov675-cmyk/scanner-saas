@@ -1,0 +1,89 @@
+{
+  "campaign": {
+    "summary": {
+      "total_leads": 3,
+      "tier_distribution": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "avg_reply_probability": 0.1504,
+      "avg_demo_probability": 0.0483,
+      "expected_total_replies": 0.5,
+      "expected_total_demos": 0.1
+    },
+    "leads": [
+      {
+        "clinic": "Smile Dental NYC",
+        "tier": "A",
+        "score": 85,
+        "country": "USA",
+        "connection_accept_prob": 0.2975,
+        "reply_prob": 0.3025,
+        "demo_prob": 0.1065,
+        "close_prob": 0.0436,
+        "expected_replies": 30.25
+      },
+      {
+        "clinic": "Perfect Teeth",
+        "tier": "B",
+        "score": 55,
+        "country": "USA",
+        "connection_accept_prob": 0.17,
+        "reply_prob": 0.1288,
+        "demo_prob": 0.034,
+        "close_prob": 0.0124,
+        "expected_replies": 12.88
+      },
+      {
+        "clinic": "Metro Chain",
+        "tier": "C",
+        "score": 15,
+        "country": "USA",
+        "connection_accept_prob": 0.0425,
+        "reply_prob": 0.0198,
+        "demo_prob": 0.0043,
+        "close_prob": 0.0009,
+        "expected_replies": 1.98
+      }
+    ]
+  },
+  "comparison": {
+    "pain": {
+      "total_leads": 3,
+      "tier_distribution": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "avg_reply_probability": 0.1504,
+      "avg_demo_probability": 0.0483,
+      "expected_total_replies": 0.5,
+      "expected_total_demos": 0.1
+    },
+    "soft": {
+      "total_leads": 3,
+      "tier_distribution": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "avg_reply_probability": 0.0962,
+      "avg_demo_probability": 0.0395,
+      "expected_total_replies": 0.3,
+      "expected_total_demos": 0.1
+    },
+    "roi": {
+      "total_leads": 3,
+      "tier_distribution": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "avg_reply_probability": 0.1383,
+      "avg_demo_probability": 0.0527,
+      "expected_total_replies": 0.4,
+      "expected_total_demos": 0.2
+    }
+  }
+}

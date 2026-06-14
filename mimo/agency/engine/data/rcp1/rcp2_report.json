@@ -1,0 +1,28 @@
+{
+  "rcp_version": "RCP-2",
+  "country": "Kyrgyzstan",
+  "message_style": "PAIN",
+  "sample_size": 20,
+  "predicted_reply_rate": 7.5,
+  "actual_reply_rate": 0,
+  "reply_error": 7.5,
+  "calibration": "UNCALIBRATED",
+  "stable": false,
+  "funnel": {
+    "sent": 0,
+    "accepted": 0,
+    "messaged": 0,
+    "replied": 0,
+    "accept_rate": 0,
+    "reply_rate": 0,
+    "accept_to_reply": 0
+  },
+  "intent_distribution": {
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "high_rate": 0
+  },
+  "verdict": "INSUFFICIENT DATA - Need more responses",
+  "timestamp": "2026-06-14T08:51:41.392030"
+}

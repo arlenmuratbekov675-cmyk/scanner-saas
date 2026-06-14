@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Scanner - Find Money Leaks</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f23; color: white; min-height: 100vh; }
+        
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        header { text-align: center; padding: 3rem 0; }
+        h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .subtitle { color: #a0a0c0; font-size: 1.1rem; }
+        
+        .scanner-box { background: #1a1a3e; border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+        
+        .input-group { display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; margin-bottom: 1.5rem; }
+        
+        input, select { background: #2a2a4e; border: 1px solid #3a3a5e; color: white; padding: 1rem; border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: #00d4aa; }
+        
+        button { background: #00d4aa; color: #0f0f23; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .results { margin-top: 2rem; }
+        
+        .result-card { background: #1a1a3e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border-left: 4px solid #00d4aa; }
+        .result-card.tier-a { border-left-color: #00d4aa; }
+        .result-card.tier-b { border-left-color: #ffbd2e; }
+        .result-card.tier-c { border-left-color: #ff5f57; }
+        
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .result-name { font-size: 1.2rem; font-weight: 600; }
+        .result-score { background: #2a2a4e; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem; }
+        .result-score.tier-a { background: #00d4aa; color: #0f0f23; }
+        .result-score.tier-b { background: #ffbd2e; color: #0f0f23; }
+        .result-score.tier-c { background: #ff5f57; color: white; }
+        
+        .result-loss { font-size: 1.5rem; font-weight: 700; color: #ff5f57; margin: 0.5rem 0; }
+        
+        .result-reasons { list-style: none; margin-top: 1rem; }
+        .result-reasons li { padding: 0.3rem 0; color: #a0a0c0; }
+        .result-reasons li::before { content: "⚠ "; color: #ffbd2e; }
+        
+        .summary { background: #1a1a3e; border-radius: 12px; padding: 1.5rem; margin-top: 2rem; }
+        .summary h3 { margin-bottom: 1rem; }
+        .summary-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: #00d4aa; }
+        .stat-label { font-size: 0.9rem; color: #a0a0c0; }
+        
+        .loading { text-align: center; padding: 2rem; color: #a0a0c0; }
+        
+        footer { text-align: center; padding: 3rem 0; color: #a0a0c0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Business Scanner</h1>
+            <p class="subtitle">Find businesses that are losing money from operational gaps</p>
+        </header>
+        
+        <div class="scanner-box">
+            <div class="input-group">
+                <input type="text" id="city" placeholder="City (e.g., London, Bishkek)" value="Bishkek">
+                <select id="niche">
+                    <option value="dental">Dental Clinics</option>
+                    <option value="beauty">Beauty Salons</option>
+                </select>
+                <button onclick="runScan()" id="scanBtn">Scan</button>
+            </div>
+        </div>
+        
+        <div id="results" class="results"></div>
+        
+        <footer>
+            <p>Business Scanner v1.0 | Find money leaks in any business</p>
+        </footer>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:8000';
+        
+        async function runScan() {
+            const city = document.getElementById('city').value;
+            const niche = document.getElementById('niche').value;
+            const btn = document.getElementById('scanBtn');
+            const resultsDiv = document.getElementById('results');
+            
+            if (!city) {
+                alert('Please enter a city');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Scanning...';
+            resultsDiv.innerHTML = '<div class="loading">Analyzing businesses...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/scan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city, niche, limit: 20 })
+                });
+                
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="loading">Error connecting to API. Make sure backend is running on port 8000.</div>';
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Scan';
+        }
+        
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (data.results.length === 0) {
+                resultsDiv.innerHTML = '<div class="loading">No businesses found for this city/niche combination.</div>';
+                return;
+            }
+            
+            let html = `<div class="summary">
+                <h3>Scan Results for ${data.city}</h3>
+                <div class="summary-stats">
+                    <div class="stat">
+                        <div class="stat-value">${data.total_found}</div>
+                        <div class="stat-label">Businesses Found</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">$${data.summary.total_estimated_monthly_loss.toLocaleString()}</div>
+                        <div class="stat-label">Total Monthly Loss</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">${data.summary.tier_distribution.A || 0}</div>
+                        <div class="stat-label">High Priority (A)</div>
+                    </div>
+                </div>
+            </div>`;
+            
+            for (const r of data.results) {
+                const tierClass = `tier-${r.tier.toLowerCase()}`;
+                html += `
+                    <div class="result-card ${tierClass}">
+                        <div class="result-header">
+                            <span class="result-name">${r.name}</span>
+                            <span class="result-score ${tierClass}">Score: ${r.score} (${r.tier})</span>
+                        </div>
+                        <div class="result-loss">~$${r.monthly_loss_estimate.toLocaleString()}/month lost</div>
+                        <p>${r.country} | Rating: ${r.rating} (${r.review_count} reviews)</p>
+                        <ul class="result-reasons">
+                            ${r.reasons.map(reason => `<li>${reason}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

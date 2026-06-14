@@ -1,0 +1,73 @@
+{
+  "scored_at": "2026-06-14T09:17:55.254860",
+  "stats": {
+    "total": 4,
+    "tier_a": 1,
+    "tier_b": 1,
+    "tier_c": 2,
+    "avg_score": 37.5,
+    "countries": [
+      "USA",
+      "Kyrgyzstan"
+    ]
+  },
+  "leads": [
+    {
+      "name": "Smile Dental NYC",
+      "country": "USA",
+      "city": "New York",
+      "website": "smiledentalnyc.com",
+      "score": 100,
+      "tier": "A",
+      "pain_signals": [
+        "No weekend hours",
+        "No online booking - manual process",
+        "No contact form - hard to reach",
+        "No live chat - no instant response",
+        "Limited hours = missed after-hours calls"
+      ],
+      "approach": "Direct pain-based outreach. Focus on missed revenue.",
+      "deal_size": "$1,500-3,000/month"
+    },
+    {
+      "name": "\u0410\u043b\u0438-\u0414\u0435\u043d\u0442",
+      "country": "Kyrgyzstan",
+      "city": "Bishkek",
+      "website": "ali-dent.kg",
+      "score": 50,
+      "tier": "B",
+      "pain_signals": [
+        "No weekend hours",
+        "No online booking - manual process",
+        "No contact form - hard to reach",
+        "No live chat - no instant response"
+      ],
+      "approach": "Soft curiosity. Ask about their current process.",
+      "deal_size": "$500-1,500/month"
+    },
+    {
+      "name": "Perfect Teeth Chicago",
+      "country": "USA",
+      "city": "Chicago",
+      "website": "perfectteeth.com",
+      "score": 0,
+      "tier": "C",
+      "pain_signals": [],
+      "approach": "Low priority. Monitor or skip.",
+      "deal_size": "Low probability"
+    },
+    {
+      "name": "Metro Dental Chain",
+      "country": "USA",
+      "city": "Los Angeles",
+      "website": "metrodental.com",
+      "score": 0,
+      "tier": "C",
+      "pain_signals": [
+        "Chain - harder to close"
+      ],
+      "approach": "Low priority. Monitor or skip.",
+      "deal_size": "Low probability"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "records": [
+    {
+      "lead_name": "Smile Dental NYC",
+      "country": "USA",
+      "tier": "A",
+      "message_style": "pain",
+      "status": "demo_booked",
+      "sent_at": "2026-06-14T09:27:50.151199",
+      "responded_at": "2026-06-14T09:27:50.151274",
+      "notes": "",
+      "actual_accept": true,
+      "actual_reply": true,
+      "actual_reply_type": "positive",
+      "actual_demo": true,
+      "actual_close": null,
+      "predicted_reply_prob": null,
+      "prediction_error": null
+    }
+  ],
+  "feedback": [
+    {
+      "lead_name": "Smile Dental NYC",
+      "actual_outcome": "reply_positive",
+      "predicted_outcome": "reply_positive",
+      "error_margin": 0.0,
+      "tier": "A",
+      "country": "USA",
+      "message_style": "pain",
+      "timestamp": "2026-06-14T09:27:50.151288",
+      "notes": "They responded within 2 hours"
+    }
+  ],
+  "saved_at": "2026-06-14T09:27:50.151455"
+}

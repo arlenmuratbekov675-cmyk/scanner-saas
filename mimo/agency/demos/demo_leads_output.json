@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-06-14T08:33:51.859263",
+  "leads": [
+    {
+      "name": "CloudSoft SaaS",
+      "score": 90,
+      "solution": "AI Onboarding + Support Bot"
+    },
+    {
+      "name": "Downtown Dental",
+      "score": 85,
+      "solution": "AI Receptionist + Appointment Booking Bot"
+    },
+    {
+      "name": "Smile Clinic",
+      "score": 85,
+      "solution": "AI Receptionist + Appointment Booking Bot"
+    },
+    {
+      "name": "HomeFinders Realty",
+      "score": 80,
+      "solution": "AI Lead Generator + Follow-up System"
+    },
+    {
+      "name": "Urban Properties",
+      "score": 80,
+      "solution": "AI Lead Generator + Follow-up System"
+    },
+    {
+      "name": "FitLife Studio",
+      "score": 75,
+      "solution": "AI Lead Capture + Membership Bot"
+    },
+    {
+      "name": "Peak Performance Gym",
+      "score": 75,
+      "solution": "AI Lead Capture + Membership Bot"
+    },
+    {
+      "name": "ShopEasy",
+      "score": 70,
+      "solution": "AI Sales Assistant + Cart Recovery"
+    }
+  ]
+}

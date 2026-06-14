@@ -1,0 +1,219 @@
+{
+  "test_id": "test_20260614_092500",
+  "name": "Pain vs Soft vs ROI - Multi-market",
+  "status": "completed",
+  "created_at": "2026-06-14T09:25:00.986645",
+  "completed_at": "2026-06-14T09:25:00.986957",
+  "winner": "pain",
+  "summary": {
+    "pain": {
+      "variant": "pain",
+      "style": "pain",
+      "description": "Direct pain-based: 'Do you lose patients from missed calls?'",
+      "total_leads": 4,
+      "avg_accept": 0.1997,
+      "avg_reply": 0.183,
+      "avg_demo": 0.0611,
+      "avg_close": 0.0244,
+      "wins": 4,
+      "win_rate": 1.0
+    },
+    "soft": {
+      "variant": "soft",
+      "style": "soft",
+      "description": "Soft curiosity: 'I help clinics capture missing patients'",
+      "total_leads": 4,
+      "avg_accept": 0.2702,
+      "avg_reply": 0.1171,
+      "avg_demo": 0.05,
+      "avg_close": 0.0173,
+      "wins": 0,
+      "win_rate": 0.0
+    },
+    "roi": {
+      "variant": "roi",
+      "style": "roi",
+      "description": "ROI-focused: 'Recover $5K-15K/month in missed revenue'",
+      "total_leads": 4,
+      "avg_accept": 0.2115,
+      "avg_reply": 0.1684,
+      "avg_demo": 0.0666,
+      "avg_close": 0.0264,
+      "wins": 0,
+      "win_rate": 0.0
+    }
+  },
+  "tier_analysis": {
+    "tier_A": {
+      "pain": {
+        "avg_reply": 0.295,
+        "avg_demo": 0.1038,
+        "count": 2
+      },
+      "soft": {
+        "avg_reply": 0.1888,
+        "avg_demo": 0.0849,
+        "count": 2
+      },
+      "roi": {
+        "avg_reply": 0.2714,
+        "avg_demo": 0.1133,
+        "count": 2
+      },
+      "winner": "pain"
+    },
+    "tier_B": {
+      "pain": {
+        "avg_reply": 0.1223,
+        "avg_demo": 0.0323,
+        "count": 1
+      },
+      "soft": {
+        "avg_reply": 0.0783,
+        "avg_demo": 0.0264,
+        "count": 1
+      },
+      "roi": {
+        "avg_reply": 0.1125,
+        "avg_demo": 0.0352,
+        "count": 1
+      },
+      "winner": "pain"
+    },
+    "tier_C": {
+      "pain": {
+        "avg_reply": 0.0198,
+        "avg_demo": 0.0043,
+        "count": 1
+      },
+      "soft": {
+        "avg_reply": 0.0126,
+        "avg_demo": 0.0036,
+        "count": 1
+      },
+      "roi": {
+        "avg_reply": 0.0182,
+        "avg_demo": 0.0047,
+        "count": 1
+      },
+      "winner": "pain"
+    }
+  },
+  "recommendations": [
+    "USE PAIN MESSAGES: Reply rate 18.3% vs others",
+    "For tier_A: use pain messages",
+    "For tier_B: use pain messages",
+    "For tier_C: use pain messages",
+    "Large performance gap between variants - message style matters significantly"
+  ],
+  "results": [
+    {
+      "variant_name": "pain",
+      "lead_name": "Smile Dental NYC",
+      "tier": "A",
+      "accept_prob": 0.2975,
+      "reply_prob": 0.3025,
+      "demo_prob": 0.1065,
+      "close_prob": 0.0436
+    },
+    {
+      "variant_name": "soft",
+      "lead_name": "Smile Dental NYC",
+      "tier": "A",
+      "accept_prob": 0.4025,
+      "reply_prob": 0.1936,
+      "demo_prob": 0.0871,
+      "close_prob": 0.0309
+    },
+    {
+      "variant_name": "roi",
+      "lead_name": "Smile Dental NYC",
+      "tier": "A",
+      "accept_prob": 0.315,
+      "reply_prob": 0.2783,
+      "demo_prob": 0.1162,
+      "close_prob": 0.0472
+    },
+    {
+      "variant_name": "pain",
+      "lead_name": "Downtown Dental",
+      "tier": "A",
+      "accept_prob": 0.2975,
+      "reply_prob": 0.2875,
+      "demo_prob": 0.1012,
+      "close_prob": 0.0414
+    },
+    {
+      "variant_name": "soft",
+      "lead_name": "Downtown Dental",
+      "tier": "A",
+      "accept_prob": 0.4025,
+      "reply_prob": 0.184,
+      "demo_prob": 0.0828,
+      "close_prob": 0.0293
+    },
+    {
+      "variant_name": "roi",
+      "lead_name": "Downtown Dental",
+      "tier": "A",
+      "accept_prob": 0.315,
+      "reply_prob": 0.2645,
+      "demo_prob": 0.1104,
+      "close_prob": 0.0448
+    },
+    {
+      "variant_name": "pain",
+      "lead_name": "Family Dentist",
+      "tier": "B",
+      "accept_prob": 0.1615,
+      "reply_prob": 0.1223,
+      "demo_prob": 0.0323,
+      "close_prob": 0.0117
+    },
+    {
+      "variant_name": "soft",
+      "lead_name": "Family Dentist",
+      "tier": "B",
+      "accept_prob": 0.2185,
+      "reply_prob": 0.0783,
+      "demo_prob": 0.0264,
+      "close_prob": 0.0083
+    },
+    {
+      "variant_name": "roi",
+      "lead_name": "Family Dentist",
+      "tier": "B",
+      "accept_prob": 0.171,
+      "reply_prob": 0.1125,
+      "demo_prob": 0.0352,
+      "close_prob": 0.0127
+    },
+    {
+      "variant_name": "pain",
+      "lead_name": "Metro Chain",
+      "tier": "C",
+      "accept_prob": 0.0425,
+      "reply_prob": 0.0198,
+      "demo_prob": 0.0043,
+      "close_prob": 0.0009
+    },
+    {
+      "variant_name": "soft",
+      "lead_name": "Metro Chain",
+      "tier": "C",
+      "accept_prob": 0.0575,
+      "reply_prob": 0.0126,
+      "demo_prob": 0.0036,
+      "close_prob": 0.0007
+    },
+    {
+      "variant_name": "roi",
+      "lead_name": "Metro Chain",
+      "tier": "C",
+      "accept_prob": 0.045,
+      "reply_prob": 0.0182,
+      "demo_prob": 0.0047,
+      "close_prob": 0.001
+    }
+  ]
+}

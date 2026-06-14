@@ -1,0 +1,4 @@
+mode: dev
+can_touch_trading: false
+allowed_paths:
+  - "C:\\Projects\\mimo"

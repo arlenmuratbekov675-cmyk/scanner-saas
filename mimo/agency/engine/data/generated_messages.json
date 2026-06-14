@@ -1,0 +1,18 @@
+{
+  "Smile Dental NYC": {
+    "style": "pain",
+    "tier": "A",
+    "connection_request": "Hi Dr. Smith,\n\nquick question \u2014 do you ever lose patients from missed calls or after-hours inquiries at Smile Dental NYC?",
+    "first_message": "Thanks for connecting, Dr. Smith.\n\nMost dental clinics I looked at lose 10\u201330% of potential patients because calls come in after hours or don't get followed up properly.\n\nIs that something you notice at Smile Dental NYC?",
+    "followup_1": "Hey Dr. Smith, just bumping this up \u2014 is after-hours lead capture a challenge for Smile Dental NYC?",
+    "followup_2": "Hi Dr. Smith, one more follow-up.\n\nIf this isn't a priority right now, totally understand.\n\nIf it is, happy to show you how we help clinics recover 15-20 extra appointments per month.",
+    "response_handlers": {
+      "voicemail": "That's exactly what we fix.\n\nOur system answers in 60 seconds and books the appointment directly into your calendar.\n\nClinics using this recover 15-20 extra patients per month.\n\nWant a quick 10-min demo?",
+      "has_system": "Good. Quick question \u2014 does it actually book the appointment, or just take a message?",
+      "price": "$1,500/month. But let me ask \u2014 how much is a missed patient worth to Smile Dental NYC?\n\nIf it's $500+, and we recover 3 per month, you're making money from day one.\n\nWant to see the math for Smile Dental NYC?",
+      "send_info": "I will. But real quick \u2014 what questions do you have right now?\n\nI want to send you exactly what helps you decide.",
+      "not_interested": "No problem. Can I ask \u2014 is it because you already have a solution, or because you don't see the need?\n\nJust curious so I'm not wasting your time.",
+      "interested": "Great. Here's the link: {demo_link}\n\nI'll show you exactly how this works for Smile Dental NYC. Takes 15 min."
+    }
+  }
+}

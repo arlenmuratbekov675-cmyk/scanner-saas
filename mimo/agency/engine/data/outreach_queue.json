@@ -1,0 +1,26 @@
+[
+  {
+    "lead": {
+      "name": "Smile Dental NYC",
+      "country": "USA",
+      "city": "New York",
+      "website": "",
+      "owner_name": "Dr. Smith",
+      "owner_linkedin": "",
+      "tier": "A",
+      "score": 85
+    },
+    "messages": {
+      "connection_request": "Hi Dr. Smith,\n\nquick question \u2014 do you ever lose patients from missed calls or after-hours inquiries at Smile Dental NYC?",
+      "first_message": "Thanks for connecting, Dr. Smith.\n\nMost dental clinics I looked at lose 10\u201330% of potential patients because calls come in after hours or don't get followed up properly.\n\nIs that something you notice at Smile Dental NYC?",
+      "followup_1": "Hey Dr. Smith, just bumping this up \u2014 is after-hours lead capture a challenge for Smile Dental NYC?",
+      "followup_2": "Hi Dr. Smith, one more follow-up.\n\nIf this isn't a priority right now, totally understand.\n\nIf it is, happy to show you how we help clinics recover 15-20 extra appointments per month."
+    },
+    "prediction": {
+      "accept_prob": 0.2975,
+      "reply_prob": 0.3025,
+      "demo_prob": 0.1065
+    },
+    "status": "pending"
+  }
+]

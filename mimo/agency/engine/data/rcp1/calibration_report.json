@@ -1,0 +1,101 @@
+{
+  "protocol": "RCP-1: Reality Calibration Protocol",
+  "country": "Kyrgyzstan",
+  "message_style": "PAIN",
+  "generated_at": "2026-06-14T09:33:25.433022",
+  "leads": [
+    {
+      "name": "\u0410\u043b\u0438-\u0414\u0435\u043d\u0442",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "Life Stom",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "Olio",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "\u042d\u043a\u0441\u043f\u0435\u0440\u0442 \u0414\u0435\u043d\u0442\u0430\u043b \u0421\u0442\u0443\u0434\u0438\u044f",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "Emmar",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "Metadent",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "32 \u0421\u0442\u043e\u043c\u0430\u0442\u043e\u043b\u043e\u0433\u0438\u044f",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "Smile Clinic",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "Grafdent",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    },
+    {
+      "name": "Azuu Dent",
+      "status": "pending",
+      "predicted_accept": 0.102,
+      "predicted_reply": 0.075,
+      "actual_accept": null,
+      "actual_reply": null,
+      "notes": ""
+    }
+  ],
+  "calibration": {
+    "status": "no_data"
+  }
+}
