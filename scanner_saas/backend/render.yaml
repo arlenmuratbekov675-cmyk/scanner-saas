@@ -1,0 +1,19 @@
+"""
+Render deployment configuration.
+"""
+import os
+
+# Render automatically sets PORT
+PORT = int(os.getenv("PORT", 10000))
+
+# Required environment variables
+REQUIRED_ENV = [
+    "GOOGLE_MAPS_API_KEY",  # Optional for MVP (falls back to mock data)
+    "STRIPE_SECRET_KEY",    # Required for payments
+]
+
+# Optional environment variables
+OPTIONAL_ENV = [
+    "STRIPE_PRO_PRICE_ID",
+    "STRIPE_BUSINESS_PRICE_ID",
+]
