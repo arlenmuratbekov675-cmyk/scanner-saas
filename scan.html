@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revenue Leak Scanner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #09090b;
+  --surface: #18181b;
+  --surface-hover: #27272a;
+  --border: #27272a;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --accent: #22d3ee;
+  --accent-glow: rgba(34, 211, 238, 0.12);
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #22c55e;
+  --gradient: linear-gradient(135deg, #22d3ee 0%, #a78bfa 50%, #f472b6 100%);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  padding: 14px 0;
+  background: rgba(9,9,11,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+nav .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; text-decoration: none; color: var(--text); }
+.logo span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav-links { display: flex; gap: 24px; align-items: center; }
+.nav-links a { color: var(--text-muted); font-size: 14px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+/* MAIN */
+.main { max-width: 1000px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* SCANNER CARD */
+.scanner-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 32px; margin-bottom: 32px;
+}
+.scanner-card h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+.scanner-card .subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-input {
+  width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-size: 14px; font-family: inherit;
+  transition: border-color 0.2s;
+}
+.form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.form-input::placeholder { color: #52525b; }
+
+.form-select {
+  width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-size: 14px; font-family: inherit;
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a1a1aa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.form-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+.scan-btn {
+  padding: 12px 28px; background: var(--accent); color: var(--bg); border: none;
+  border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap; height: 44px;
+}
+.scan-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+.scan-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.scan-btn .spinner { display: none; width: 16px; height: 16px; border: 2px solid var(--bg); border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
+.scan-btn.loading .spinner { display: inline-block; }
+.scan-btn.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* LOADING STATE */
+.loading-state {
+  text-align: center; padding: 64px 24px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+}
+.loading-bars { display: flex; gap: 4px; justify-content: center; margin-bottom: 20px; }
+.loading-bars span {
+  width: 4px; height: 24px; background: var(--accent); border-radius: 2px;
+  animation: bar 1s ease-in-out infinite;
+}
+.loading-bars span:nth-child(2) { animation-delay: 0.1s; }
+.loading-bars span:nth-child(3) { animation-delay: 0.2s; }
+.loading-bars span:nth-child(4) { animation-delay: 0.3s; }
+.loading-bars span:nth-child(5) { animation-delay: 0.4s; }
+@keyframes bar { 0%, 100% { height: 12px; opacity: 0.4; } 50% { height: 28px; opacity: 1; } }
+.loading-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.loading-state p { font-size: 14px; color: var(--text-muted); }
+.loading-status { font-size: 13px; color: var(--accent); margin-top: 12px; font-weight: 500; }
+
+/* ERROR STATE */
+.error-state {
+  text-align: center; padding: 48px 24px;
+  background: var(--surface); border: 1px solid rgba(239,68,68,0.3); border-radius: 16px;
+}
+.error-icon { font-size: 48px; margin-bottom: 16px; }
+.error-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.error-state p { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto; }
+.retry-btn {
+  padding: 10px 24px; background: var(--surface-hover); color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;
+}
+.retry-btn:hover { background: var(--border); }
+
+/* SUMMARY BAR */
+.summary-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  margin-bottom: 24px;
+}
+.summary-item {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 20px; text-align: center;
+}
+.summary-item .val { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+.summary-item .val.accent { color: var(--accent); }
+.summary-item .val.danger { color: var(--danger); }
+.summary-item .val.warning { color: var(--warning); }
+.summary-item .val.success { color: var(--success); }
+.summary-item .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; font-weight: 600; }
+
+/* FILTER TABS */
+.filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-tab {
+  padding: 6px 14px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;
+  color: var(--text-muted); transition: all 0.2s;
+}
+.filter-tab:hover { border-color: var(--accent); color: var(--text); }
+.filter-tab.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+
+/* RESULT CARDS */
+.results-list { display: flex; flex-direction: column; gap: 10px; }
+
+.result-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px 24px; display: grid; grid-template-columns: 1fr auto; gap: 16px;
+  align-items: center; transition: all 0.2s; cursor: default;
+  border-left: 3px solid transparent;
+}
+.result-card:hover { border-color: var(--surface-hover); background: #1c1c1f; }
+.result-card[data-tier="A"] { border-left-color: var(--accent); }
+.result-card[data-tier="B"] { border-left-color: var(--warning); }
+.result-card[data-tier="C"] { border-left-color: var(--danger); }
+
+.result-info { min-width: 0; }
+.result-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.result-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.result-tier {
+  padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.result-tier.tier-a { background: rgba(34,211,238,0.15); color: var(--accent); }
+.result-tier.tier-b { background: rgba(245,158,11,0.15); color: var(--warning); }
+.result-tier.tier-c { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+.result-meta { display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; flex-wrap: wrap; }
+.result-meta span { display: flex; align-items: center; gap: 4px; }
+.result-reasons { display: flex; gap: 6px; flex-wrap: wrap; }
+.reason-tag {
+  padding: 3px 8px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 4px; font-size: 11px; color: #fca5a5; white-space: nowrap;
+}
+
+.result-right { text-align: right; flex-shrink: 0; }
+.result-loss { font-size: 20px; font-weight: 800; color: var(--danger); letter-spacing: -0.5px; }
+.result-loss-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.result-score-bar { width: 80px; height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; margin-left: auto; }
+.result-score-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+.result-score-fill.tier-a { background: var(--accent); }
+.result-score-fill.tier-b { background: var(--warning); }
+.result-score-fill.tier-c { background: var(--danger); }
+
+/* PAYWALL */
+.paywall-card {
+  background: var(--surface); border: 1px solid var(--accent); border-radius: 16px;
+  padding: 32px; text-align: center; margin-top: 24px;
+  box-shadow: 0 0 60px var(--accent-glow);
+}
+.paywall-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.paywall-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+.paywall-card .price { font-size: 36px; font-weight: 800; color: var(--accent); margin: 16px 0; }
+.paywall-card .price span { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+.paywall-card .upgrade-btn {
+  padding: 12px 32px; background: var(--accent); color: var(--bg); border: none;
+  border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;
+}
+.paywall-card .upgrade-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px var(--accent-glow); }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center; padding: 64px 24px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+.empty-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.empty-state p { font-size: 14px; color: var(--text-muted); }
+
+@media (max-width: 640px) {
+  .form-row { grid-template-columns: 1fr; }
+  .summary-bar { grid-template-columns: repeat(2, 1fr); }
+  .result-card { grid-template-columns: 1fr; }
+  .result-right { text-align: left; }
+  .result-score-bar { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><span>Revenue</span>Leak</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/scan">Scanner</a>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="scanner-card">
+    <h1>Revenue Leak Scanner</h1>
+    <p class="subtitle">Enter a city and business niche to find hidden revenue opportunities.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" id="city" class="form-input" placeholder="e.g. Bishkek, London, New York" value="Bishkek">
+      </div>
+      <div class="form-group">
+        <label>Niche</label>
+        <select id="niche" class="form-select">
+          <option value="dental">Dental Clinics</option>
+          <option value="beauty">Beauty Salons</option>
+          <option value="fitness">Gyms & Fitness</option>
+          <option value="restaurants">Restaurants</option>
+          <option value="auto">Auto Repair</option>
+        </select>
+      </div>
+      <button class="scan-btn" id="scanBtn" onclick="runScan()">
+        <span class="btn-text">Scan</span>
+        <span class="spinner"></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="output"></div>
+</div>
+
+<script>
+const API_URL = 'https://scanner-saas-mucj.onrender.com';
+let currentData = null;
+let currentFilter = 'all';
+
+async function runScan() {
+  const city = document.getElementById('city').value.trim();
+  const niche = document.getElementById('niche').value;
+  const btn = document.getElementById('scanBtn');
+  const output = document.getElementById('output');
+
+  if (!city) {
+    document.getElementById('city').focus();
+    return;
+  }
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+  output.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-bars"><span></span><span></span><span></span><span></span><span></span></div>
+      <h3>Scanning ${city}...</h3>
+      <p>Analyzing businesses in the ${niche} niche</p>
+      <div class="loading-status" id="loadStatus">Connecting to scanner...</div>
+    </div>`;
+
+  const msgs = ['Analyzing websites...', 'Checking booking systems...', 'Evaluating customer touchpoints...', 'Calculating revenue leaks...', 'Scoring opportunities...'];
+  let i = 0;
+  const interval = setInterval(() => {
+    const el = document.getElementById('loadStatus');
+    if (el && i < msgs.length) { el.textContent = msgs[i]; i++; }
+  }, 2000);
+
+  try {
+    const response = await fetch(`${API_URL}/scan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ city, niche, limit: 20, plan: 'free' })
+    });
+
+    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+    const data = await response.json();
+    currentData = data;
+    currentFilter = 'all';
+    renderResults(data);
+  } catch (error) {
+    output.innerHTML = `
+      <div class="error-state">
+        <div class="error-icon">Connection failed</div>
+        <h3>Couldn't reach the scanner</h3>
+        <p>The backend may be waking up (free tier). Wait 30 seconds and try again.</p>
+        <button class="retry-btn" onclick="runScan()">Try Again</button>
+      </div>`;
+  } finally {
+    clearInterval(interval);
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+function renderResults(data, filter) {
+  const output = document.getElementById('output');
+
+  if (!data.results || data.results.length === 0) {
+    output.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">No results</div>
+        <h3>No businesses found</h3>
+        <p>Try a different city or niche combination.</p>
+      </div>`;
+    return;
+  }
+
+  const f = filter || 'all';
+  const results = f === 'all' ? data.results : data.results.filter(r => r.tier === f);
+  const s = data.summary;
+
+  let html = `
+    <div class="summary-bar">
+      <div class="summary-item">
+        <div class="val accent">${data.total_found}</div>
+        <div class="lbl">Businesses Found</div>
+      </div>
+      <div class="summary-item">
+        <div class="val danger">$${s.total_estimated_monthly_loss.toLocaleString()}</div>
+        <div class="lbl">Monthly Revenue Lost</div>
+      </div>
+      <div class="summary-item">
+        <div class="val warning">${s.tier_distribution.A || 0}</div>
+        <div class="lbl">High Priority (A)</div>
+      </div>
+      <div class="summary-item">
+        <div class="val success">${Math.round(s.avg_score)}</div>
+        <div class="lbl">Avg Opportunity Score</div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-tab ${f === 'all' ? 'active' : ''}" onclick="applyFilter('all')">All (${data.results.length})</button>
+      <button class="filter-tab ${f === 'A' ? 'active' : ''}" onclick="applyFilter('A')">Tier A (${data.results.filter(r => r.tier === 'A').length})</button>
+      <button class="filter-tab ${f === 'B' ? 'active' : ''}" onclick="applyFilter('B')">Tier B (${data.results.filter(r => r.tier === 'B').length})</button>
+      <button class="filter-tab ${f === 'C' ? 'active' : ''}" onclick="applyFilter('C')">Tier C (${data.results.filter(r => r.tier === 'C').length})</button>
+    </div>
+
+    <div class="results-list">`;
+
+  for (const r of results) {
+    const tc = r.tier.toLowerCase();
+    html += `
+      <div class="result-card" data-tier="${r.tier}">
+        <div class="result-info">
+          <div class="result-top">
+            <span class="result-name">${esc(r.name)}</span>
+            <span class="result-tier tier-${tc}">TIER ${r.tier}</span>
+          </div>
+          <div class="result-meta">
+            <span>${esc(r.city)}, ${esc(r.country)}</span>
+            <span>⭐ ${r.rating} (${r.review_count} reviews)</span>
+            <span>${esc(r.website)}</span>
+          </div>
+          <div class="result-reasons">
+            ${r.reasons.map(r => `<span class="reason-tag">${esc(r)}</span>`).join('')}
+          </div>
+        </div>
+        <div class="result-right">
+          <div class="result-loss">$${r.monthly_loss_estimate.toLocaleString()}</div>
+          <div class="result-loss-label">estimated monthly loss</div>
+          <div class="result-score-bar">
+            <div class="result-score-fill tier-${tc}" style="width:${r.score}%"></div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  html += '</div>';
+
+  if (data.is_preview) {
+    const hidden = data.total_available - data.total_found;
+    html += `
+      <div class="paywall-card">
+        <h3>Unlock ${hidden} more businesses</h3>
+        <p>You're seeing ${data.total_found} of ${data.total_available} results</p>
+        <div class="price">$19 <span>/ month</span></div>
+        <button class="upgrade-btn" onclick="checkout()">Unlock Full Report</button>
+      </div>`;
+  }
+
+  output.innerHTML = html;
+}
+
+function applyFilter(f) {
+  currentFilter = f;
+  if (currentData) renderResults(currentData, f);
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+async function checkout() {
+  const email = prompt('Enter your email for Stripe checkout:');
+  if (!email) return;
+  try {
+    const res = await fetch(`${API_URL}/checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: 'pro', email })
+    });
+    const data = await res.json();
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+    } else {
+      alert(data.message || 'Stripe not configured yet. Contact us to upgrade.');
+    }
+  } catch (e) {
+    alert('Payment system unavailable. Please try again later.');
+  }
+}
+
+document.getElementById('city').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runScan();
+});
+</script>
+
+</body>
+</html>

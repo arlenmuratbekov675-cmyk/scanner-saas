@@ -1,17 +1,6 @@
 {
-  "builds": [
-    {
-      "src": "frontend/app.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "frontend/index.html",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/scan", "dest": "/frontend/app.html" },
-    { "src": "/scan/", "dest": "/frontend/app.html" },
-    { "src": "/", "dest": "/frontend/index.html" }
+  "rewrites": [
+    { "source": "/scan", "destination": "/scan.html" },
+    { "source": "/scan/", "destination": "/scan.html" }
   ]
 }
