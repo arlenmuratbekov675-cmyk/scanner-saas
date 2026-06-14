@@ -144,8 +144,8 @@ def create_checkout(request: CheckoutRequest):
     checkout_url = stripe_service.create_checkout_session(
         plan=request.plan,
         user_email=request.email,
-        success_url="https://yourapp.com/success",
-        cancel_url="https://yourapp.com/cancel",
+        success_url="https://scanner-saas-five.vercel.app/app.html?paid=true",
+        cancel_url="https://scanner-saas-five.vercel.app/app.html",
     )
     
     if not checkout_url:
