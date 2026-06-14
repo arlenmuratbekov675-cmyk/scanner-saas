@@ -1,7 +1,17 @@
 {
-  "outputDirectory": "frontend",
-  "rewrites": [
-    { "source": "/scan", "destination": "/app.html" },
-    { "source": "/scan/", "destination": "/app.html" }
+  "builds": [
+    {
+      "src": "frontend/app.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    { "src": "/scan", "dest": "/frontend/app.html" },
+    { "src": "/scan/", "dest": "/frontend/app.html" },
+    { "src": "/", "dest": "/frontend/index.html" }
   ]
 }
