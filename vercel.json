@@ -1,7 +1,7 @@
 {
-  "cleanUrls": true,
+  "outputDirectory": "frontend",
   "rewrites": [
-    { "source": "/scan", "destination": "/index.html" },
-    { "source": "/scan/", "destination": "/index.html" }
+    { "source": "/scan", "destination": "/app.html" },
+    { "source": "/scan/", "destination": "/app.html" }
   ]
 }
