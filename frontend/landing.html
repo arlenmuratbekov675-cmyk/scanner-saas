@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Business Scanner AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f1a;
+    color: white;
+}
+
+header {
+    padding: 80px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #1a1f35, #0b0f1a);
+}
+
+h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #b0b0b0;
+    font-size: 18px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+.card {
+    background: #141a2e;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #222a44;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    background: #0b0f1a;
+    color: white;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #4f7cff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #3a63ff;
+}
+
+.result {
+    background: #0f1424;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #4f7cff;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    background: #2b355a;
+    margin-left: 10px;
+}
+
+.paywall {
+    background: #1c243d;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.price {
+    font-size: 28px;
+    margin: 10px 0;
+}
+
+.small {
+    color: #999;
+    font-size: 14px;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Business Scanner AI</h1>
+    <p>Find businesses losing customers & revenue in seconds</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Scan a City</h2>
+        <input id="city" placeholder="Enter city (e.g. Bishkek)">
+        <input id="niche" placeholder="Enter niche (e.g. dental)">
+        <button onclick="scan()">Scan Now</button>
+    </div>
+
+    <div id="results"></div>
+
+</div>
+
+<script>
+const API_URL = "http://127.0.0.1:8000";
+
+async function scan() {
+    const city = document.getElementById("city").value;
+    const niche = document.getElementById("niche").value;
+    const resultsDiv = document.getElementById("results");
+
+    if (!city || !niche) {
+        alert("Please enter city and niche");
+        return;
+    }
+
+    resultsDiv.innerHTML = "<div class='loading'>Scanning...</div>";
+
+    try {
+        const res = await fetch(`${API_URL}/scan`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({city, niche, limit: 10, plan: "free"})
+        });
+
+        const data = await res.json();
+        displayResults(data);
+    } catch (error) {
+        resultsDiv.innerHTML = "<div class='loading'>Error: Backend not running</div>";
+    }
+}
+
+function displayResults(data) {
+    const resultsDiv = document.getElementById("results");
+
+    if (!data.results || data.results.length === 0) {
+        resultsDiv.innerHTML = "<div class='loading'>No businesses found</div>";
+        return;
+    }
+
+    let html = "<div class='card'><h2>Results</h2>";
+
+    data.results.slice(0, 3).forEach(b => {
+        html += `
+        <div class="result">
+            <b>${b.name}</b>
+            <span class="badge">Score ${b.score} (${b.tier})</span>
+            <p>Estimated loss: $${b.monthly_loss_estimate.toLocaleString()}/month</p>
+            <p class="small">${b.reasons.join(" • ")}</p>
+        </div>`;
+    });
+
+    // Paywall
+    if (data.is_preview) {
+        const hiddenCount = data.total_available - data.total_found;
+        html += `
+        <div class="paywall">
+            <h3>⚠️ Preview Only</h3>
+            <p class="small">You're seeing ${data.total_found} of ${data.total_available} businesses</p>
+            <p><b>${hiddenCount} more businesses</b> with full contact info</p>
+            <div class="price">$19 / month</div>
+            <button onclick="checkout()">Unlock Full Report →</button>
+        </div>`;
+    } else {
+        html += `
+        <div class="paywall">
+            <h3>✅ Full Report</h3>
+            <p class="small">${data.total_found} businesses found</p>
+            <p>Total estimated loss: $${data.summary.total_estimated_monthly_loss.toLocaleString()}/month</p>
+        </div>`;
+    }
+
+    html += "</div>";
+    resultsDiv.innerHTML = html;
+}
+
+async function checkout() {
+    const email = prompt("Enter your email for Stripe checkout:");
+    if (!email) return;
+
+    try {
+        const res = await fetch(`${API_URL}/checkout`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({plan: "pro", email})
+        });
+
+        const data = await res.json();
+
+        if (data.checkout_url) {
+            window.location.href = data.checkout_url;
+        } else {
+            alert(data.message || "Stripe not configured. Contact us to upgrade.");
+        }
+    } catch (error) {
+        alert("Error connecting to payment system");
+    }
+}
+</script>
+
+</body>
+</html>
