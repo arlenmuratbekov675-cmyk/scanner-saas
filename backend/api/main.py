@@ -172,5 +172,18 @@ def health():
     return {"status": "ok"}
 
 
+@app.get("/debug/stripe")
+def debug_stripe():
+    import os
+    key = os.getenv("STRIPE_SECRET_KEY", "")
+    return {
+        "env_key_exists": bool(key),
+        "key_prefix": key[:7] if key else "none",
+        "service_enabled": stripe_service.enabled,
+        "pro_price": PLANS["pro"]["stripe_price_id"],
+        "biz_price": PLANS["business"]["stripe_price_id"],
+    }
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
