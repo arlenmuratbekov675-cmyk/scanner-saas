@@ -105,7 +105,7 @@ class GoogleMapsService:
         In production, replace with 2GIS or other local directory.
         """
         # Import mock data from scanner
-        from backend.core.scanner import MOCK_BUSINESSES
+        from core.scanner import MOCK_BUSINESSES
         
         mock_data = MOCK_BUSINESSES.get(niche, {}).get(city, [])
         

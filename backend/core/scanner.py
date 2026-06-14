@@ -3,9 +3,9 @@ Core Scanner - Analyzes businesses and finds money leaks.
 Uses Google Maps API for real data, falls back to mock data.
 """
 from typing import List, Dict
-from .analyzer import analyze_website
-from .scoring import score_business, estimate_loss
-from ..services.google_maps import GoogleMapsService
+from core.analyzer import analyze_website
+from core.scoring import score_business, estimate_loss
+from services.google_maps import GoogleMapsService
 
 
 # Mock business data (fallback when API not available)
