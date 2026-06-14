@@ -8,15 +8,15 @@
   "routes": [
     {
       "src": "/",
-      "dest": "/frontend/landing.html"
+      "dest": "/landing.html"
     },
     {
       "src": "/scan",
-      "dest": "/frontend/index.html"
+      "dest": "/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend/$1"
+      "dest": "/$1"
     }
   ]
 }
