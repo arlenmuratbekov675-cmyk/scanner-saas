@@ -3,7 +3,7 @@ Scanner SaaS - Backend API
 Find businesses that are losing customers.
 Includes paywall logic for free/paid tiers.
 """
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
@@ -81,7 +81,9 @@ def root():
 @app.post("/scan", response_model=ScanResponse)
 def scan(request: ScanRequest):
     """Scan businesses in a city/niche and find money leaks."""
-    plan_config = PLANS.get(request.plan, PLANS["free"])
+    # SECURITY: never trust the client's 'plan'. Derive it server-side from Stripe.
+    verified_plan = stripe_service.plan_for_email(request.user_email)
+    plan_config = PLANS.get(verified_plan, PLANS["free"])
     
     # Get all results
     all_results = run_scan(request.city, request.niche, 200)
@@ -184,6 +186,27 @@ def debug_stripe():
         "biz_price": PLANS["business"]["stripe_price_id"],
     }
 
+
+
+@app.post("/webhook")
+async def stripe_webhook(request: Request, stripe_signature: str = Header(None)):
+    """Stripe webhook: verifies signature, logs subscription lifecycle events.
+    Plan access is verified live via plan_for_email(), so this endpoint mainly
+    confirms/records payment events (and is the hook for future receipts/DB).
+    """
+    payload = await request.body()
+    try:
+        event = stripe_service.construct_event(payload, stripe_signature)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid webhook: {e}")
+
+    etype = event.get("type", "")
+    obj = event.get("data", {}).get("object", {})
+    if etype == "checkout.session.completed":
+        print(f"[stripe] paid: {obj.get('customer_email') or obj.get('customer_details', {}).get('email')}")
+    elif etype in ("customer.subscription.deleted", "customer.subscription.updated"):
+        print(f"[stripe] sub {etype}: customer={obj.get('customer')} status={obj.get('status')}")
+    return {"received": True}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
