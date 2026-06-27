@@ -115,4 +115,37 @@ class StripeService:
             return {"active": False, "plan": "free"}
 
 
+    def construct_event(self, payload, sig_header):
+        """Verify a Stripe webhook signature and return the event.
+        Raises ValueError/stripe.error.SignatureVerificationError if invalid.
+        """
+        webhook_secret = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+        if not webhook_secret:
+            raise ValueError("STRIPE_WEBHOOK_SECRET not configured")
+        return stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+
+    def plan_for_email(self, email):
+        """Server-side source of truth for a user's plan.
+        Looks the customer up in Stripe by email and returns their
+        active plan key ('pro'/'business') or 'free'. Never trusts the client.
+        """
+        if not self.enabled or not email:
+            return "free"
+        try:
+            customers = stripe.Customer.list(email=email, limit=1)
+            if not customers.data:
+                return "free"
+            customer_id = customers.data[0].id
+            subs = stripe.Subscription.list(customer=customer_id, status="active", limit=1)
+            if not subs.data:
+                return "free"
+            price_id = subs.data[0]["items"]["data"][0]["price"]["id"]
+            for plan_key, plan in PLANS.items():
+                if plan.get("stripe_price_id") == price_id:
+                    return plan_key
+            return "pro"
+        except Exception:
+            return "free"
+
+
 stripe_service = StripeService()
