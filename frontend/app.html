@@ -254,7 +254,11 @@ nav .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: fl
           <option value="auto">Auto Repair</option>
         </select>
       </div>
-      <button class="scan-btn" id="scanBtn" onclick="runScan()">
+            <div class="form-group">
+        <label>Your email (use the one you'll pay with)</label>
+        <input type="email" id="email" class="form-input" placeholder="you@email.com">
+      </div>
+<button class="scan-btn" id="scanBtn" onclick="runScan()">
         <span class="btn-text">Scan</span>
         <span class="spinner"></span>
       </button>
@@ -301,7 +305,7 @@ async function runScan() {
     const response = await fetch(`${API_URL}/scan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city, niche, limit: 20, plan: 'free' })
+      body: JSON.stringify({ city, niche, limit: 20, user_email: (document.getElementById('email').value || '').trim() })
     });
 
     if (!response.ok) throw new Error(`Server error: ${response.status}`);
